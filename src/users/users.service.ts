@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -14,7 +14,14 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    await this.userRepository.save(createUserDto);
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (existingUser) {
+      throw new Error('Email já está em uso');
+    }
+    const user = await this.userRepository.create(createUserDto);
+    return this.userRepository.save(user);
   }
 
   async findAll() {
@@ -24,14 +31,22 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    return await this.userRepository.findOne({ where: { id } });
+    try {
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      return user;
+    } catch (error) {
+      throw new Error('Erro ao buscar usuário');
+    }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.userRepository.update(id, updateUserDto);
   }
 
-  async remove(id: string) {
-    return await this.userRepository.delete({ id });
+  async remove(id: string): Promise<void> {
+    await this.userRepository.softDelete({ id });
   }
 }

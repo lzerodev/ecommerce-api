@@ -1,8 +1,10 @@
+import { UserEntity } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -42,6 +44,9 @@ export class ProductEntity {
     cascade: true,
   })
   images: ProductImageEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.products)
+  user: UserEntity;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

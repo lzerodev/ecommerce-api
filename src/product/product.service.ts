@@ -14,11 +14,15 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    await this.productRepository.save(createProductDto);
+    const product = await this.productRepository.create(createProductDto);
+    return this.productRepository.save(product);
   }
 
-  async findAll() {
-    const AllProducts = await this.productRepository.find();
+  async findAll(): Promise<ProductListDTO[]> {
+    const AllProducts = await this.productRepository.find({
+      relations: ['features', 'images'],
+      order: { createdAt: 'DESC' },
+    });
     const listProducts = AllProducts.map(
       (product) =>
         new ProductListDTO(
@@ -39,7 +43,7 @@ export class ProductService {
     await this.productRepository.update(id, updateProductDto);
   }
 
-  async remove(id: string) {
-    await this.productRepository.delete({ id });
+  async remove(id: string): Promise<void> {
+    await this.productRepository.softDelete({ id });
   }
 }
