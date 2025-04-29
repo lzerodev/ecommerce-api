@@ -17,9 +17,6 @@ export class ProductEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id', length: 100, nullable: false })
-  userID: string;
-
   @Column({ name: 'name', length: 100, nullable: false })
   name: string;
 
@@ -48,10 +45,19 @@ export class ProductEntity {
   @ManyToOne(() => UserEntity, (user) => user.products)
   user: UserEntity;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: string;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: string;
 
   @DeleteDateColumn({ name: 'deleted_at' })

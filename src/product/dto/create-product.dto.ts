@@ -7,7 +7,6 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  IsUUID,
   MaxLength,
   Min,
   ValidateNested,
@@ -43,9 +42,6 @@ export class ProductImageDTO {
 }
 
 export class CreateProductDto {
-  @IsUUID(undefined, { message: 'ID de usuário inválido' })
-  userID: string;
-
   @IsString()
   @IsNotEmpty({ message: 'Nome do produto não pode ser vazio' })
   name: string;

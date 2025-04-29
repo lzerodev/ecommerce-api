@@ -22,7 +22,6 @@ export class ProductController {
 
     product.id = randomUUID();
     product.name = productData.name;
-    product.userID = productData.userID;
     product.value = productData.value;
     product.quantity = productData.quantity;
     product.description = productData.description;
