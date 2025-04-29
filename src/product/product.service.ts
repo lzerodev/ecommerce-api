@@ -20,7 +20,13 @@ export class ProductService {
   async findAll() {
     const AllProducts = await this.productRepository.find();
     const listProducts = AllProducts.map(
-      (product) => new ProductListDTO(product.id, product.name),
+      (product) =>
+        new ProductListDTO(
+          product.id,
+          product.name,
+          product.features,
+          product.images,
+        ),
     );
     return listProducts;
   }

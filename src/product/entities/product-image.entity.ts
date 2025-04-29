@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductEntity } from './product.entity';
 
 @Entity('product_images')
-export class ProductImage {
+export class ProductImageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -10,4 +11,19 @@ export class ProductImage {
 
   @Column({ name: 'description', length: 100, nullable: false })
   description: string;
+
+  @ManyToOne(() => ProductEntity, (product) => product.images, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  product: ProductEntity;
+
+  // @CreateDateColumn({ name: 'created_at' })
+  // createdAt: string;
+
+  // @UpdateDateColumn({ name: 'updated_at' })
+  // updatedAt: string;
+
+  // @DeleteDateColumn({ name: 'deleted_at' })
+  // deletedAt: string;
 }

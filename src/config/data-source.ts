@@ -12,7 +12,7 @@ const PgDataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   migrations: ['src/migrations/*.ts'],
-  synchronize: false,
+  synchronize: true,
   logging: true,
 });
 
