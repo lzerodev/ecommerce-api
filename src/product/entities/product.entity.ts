@@ -32,11 +32,13 @@ export class ProductEntity {
 
   @OneToMany(() => ProductFeatureEntity, (features) => features.product, {
     cascade: true,
+    eager: true,
   })
   features: ProductFeatureEntity[];
 
   @OneToMany(() => ProductImageEntity, (images) => images.product, {
     cascade: true,
+    eager: true,
   })
   images: ProductImageEntity[];
 
