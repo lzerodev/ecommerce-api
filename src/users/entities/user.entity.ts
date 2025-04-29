@@ -1,9 +1,7 @@
-import { ProductEntity } from 'src/product/entities/product.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,9 +25,6 @@ export class UserEntity {
 
   @Column({ name: 'phone_number', type: 'varchar', length: 20, nullable: true })
   phoneNumber?: string;
-
-  @OneToMany(() => ProductEntity, (product) => product.user)
-  products: ProductEntity[];
 
   @CreateDateColumn({
     name: 'created_at',
