@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostgresConfigService } from './config/postgres.config.service';
+import typeorm from './db/data-source-cli';
 import { ProductModule } from './product/product.module';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     UsersModule,
@@ -11,10 +11,12 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env'],
+      load: [typeorm],
     }),
     TypeOrmModule.forRootAsync({
-      useClass: PostgresConfigService,
-      inject: [PostgresConfigService],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
     }),
   ],
   controllers: [],
