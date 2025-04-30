@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -29,7 +30,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     const product = await this.productService.findOne(id);
     if (!product) {
       return {
@@ -41,7 +42,7 @@ export class ProductController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateProductDTO: UpdateProductDto,
   ) {
     const updatedProduct = await this.productService.update(
@@ -56,7 +57,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     const deletedProduct = await this.productService.remove(id);
 
     return {
