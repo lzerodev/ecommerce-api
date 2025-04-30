@@ -7,6 +7,7 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
+import { UniqueEmail } from '../validations/unique-email';
 
 export class CreateUserDto {
   @IsString({ message: 'Por favor, insira um nome válido' })
@@ -14,6 +15,7 @@ export class CreateUserDto {
 
   @IsEmail(undefined, { message: 'Por favor, insira um email válido' })
   @IsNotEmpty({ message: 'Email é obrigatório' })
+  @UniqueEmail()
   email: string;
 
   @IsString()

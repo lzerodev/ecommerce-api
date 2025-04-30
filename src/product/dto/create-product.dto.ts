@@ -65,12 +65,14 @@ export class CreateProductDto {
   @IsArray()
   @ArrayMinSize(1)
   @Type(() => ProductFeatureDTO)
+  @IsOptional()
   features?: ProductFeatureDTO[];
 
   @ValidateNested()
   @IsArray()
   @ArrayMinSize(1)
   @Type(() => ProductImageDTO)
+  @IsOptional()
   images?: ProductImageDTO[];
 
   @IsString()

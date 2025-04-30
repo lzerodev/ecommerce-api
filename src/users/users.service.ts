@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
 import { ListUserDto } from './dto/list-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,14 +14,18 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
-    if (existingUser) {
-      throw new Error('Email já está em uso');
-    }
-    const user = await this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    const usersEntity = new UserEntity();
+
+    usersEntity.name = createUserDto.name;
+    usersEntity.email = createUserDto.email;
+    usersEntity.password = createUserDto.password;
+
+    return this.userRepository.save(usersEntity);
+  }
+
+  async findByEmail(email: string) {
+    const emailCheck = await this.userRepository.findOne({ where: { email } });
+    return emailCheck;
   }
 
   async findAll() {
@@ -31,15 +35,8 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    try {
-      const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) {
-        throw new NotFoundException(`User with ID ${id} not found`);
-      }
-      return user;
-    } catch (error) {
-      throw new Error('Erro ao buscar usuário');
-    }
+    const user = await this.userRepository.findOne({ where: { id } });
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

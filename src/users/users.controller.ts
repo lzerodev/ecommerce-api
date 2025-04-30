@@ -4,14 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ListUserDto } from './dto/list-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -20,16 +19,10 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const userEntity = new UserEntity();
-    userEntity.name = createUserDto.name;
-    userEntity.email = createUserDto.email;
-    userEntity.password = createUserDto.password;
-    userEntity.id = uuid();
-
-    this.usersService.create(userEntity);
+    const user = await this.usersService.create(createUserDto);
 
     return {
-      user: new ListUserDto(userEntity.id, userEntity.name),
+      user: new ListUserDto(user.id, user.name),
       message: 'User created successfully',
     };
   }
@@ -42,13 +35,34 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const product = await this.usersService.findOne(id);
-    return product;
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const user = await this.usersService.findOne(id);
+    if (!user) {
+      return {
+        message: 'User not found',
+      };
+    }
+    return user;
+  }
+
+  @Get('email/:email')
+  async findByEmail(@Param('email') email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      return {
+        message: 'User not found',
+      };
+    }
+    return {
+      user: new ListUserDto(user.id, user.name),
+    };
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     const updatedUser = await this.usersService.update(id, updateUserDto);
 
     return {
