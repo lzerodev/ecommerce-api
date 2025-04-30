@@ -14,8 +14,17 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    const product = await this.productRepository.create(createProductDto);
-    return this.productRepository.save(product);
+    const productEntity = new ProductEntity();
+
+    productEntity.name = createProductDto.name;
+    productEntity.value = createProductDto.value;
+    productEntity.quantity = createProductDto.quantity;
+    productEntity.description = createProductDto.description;
+    productEntity.category = createProductDto.category;
+    productEntity.features = createProductDto.features;
+    productEntity.images = createProductDto.images;
+
+    return this.productRepository.save(productEntity);
   }
 
   async findAll(): Promise<ProductListDTO[]> {

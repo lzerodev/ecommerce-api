@@ -22,8 +22,8 @@ export class UsersController {
     const user = await this.usersService.create(createUserDto);
 
     return {
-      user: new ListUserDto(user.id, user.name),
       message: 'User created successfully',
+      user: new ListUserDto(user.id, user.name),
     };
   }
 
